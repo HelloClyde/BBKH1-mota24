@@ -102,5 +102,39 @@
       "sha256": "cdac778d9315ec40ba899f39daf06fc90a45d50b9a058758eb9bf16a444a6605"
     }
   },
-  "source_text_normalization": "LF line endings in the public repository; the resulting BDA is byte-identical to the firmware-tested build."
+  "source_text_normalization": "LF line endings in the public repository; the resulting BDA is byte-identical to the firmware-tested build.",
+  "supplementary_input_verification": {
+    "result": "passed",
+    "physical_device_used": false,
+    "game_ram_modified": false,
+    "supplementary_checks": [
+      "held-confirm-enters-opening-without-advancing-pages",
+      "fairy-touch-advance-no-extra-action-after-touch-release",
+      "held-confirm-advances-dialogue-once",
+      "held-up-moves-more-than-one-tile",
+      "released-direction-stops-with-open-path-ahead",
+      "touch-menu-no-extra-action-after-touch-release"
+    ],
+    "owned_emulator_stopped": true,
+    "owned_frontend_stopped": true,
+    "template_unchanged": true,
+    "elapsed_seconds": 94.859
+  },
+  "host_verification": {
+    "result": "passed",
+    "clean_checkout": true,
+    "isolated_python_environment": true,
+    "python": "3.11.5",
+    "host_gcc": "MSYS2 UCRT64 GCC 16.1.0",
+    "tests": [
+      "test_core",
+      "test_ui",
+      "test_battle",
+      "test_storage",
+      "test_visual"
+    ],
+    "rendered_pages": 24,
+    "bda_identical_to_firmware_test": true,
+    "repeated_build_identical": true
+  }
 }
