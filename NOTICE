@@ -1,0 +1,21 @@
+H1 Mota24, derived from BBK9588-mota24
+Copyright 2026 HelloClyde
+
+Original application code and build/test scripts are licensed under Apache-2.0.
+This license does not grant rights to third-party maps, pixel artwork, fonts,
+trademarks, or their generated representations. See SOURCES.md for attribution
+and the content whose separate license has not been verified.
+
+The upstream application is BBK9588-mota24 0.1.0-alpha.6:
+https://github.com/HelloClyde/BBK9588-mota24
+commit 29df390c922e9aded9ec67f62ea15b52ed0f1314
+
+This is an independent unofficial adaptation. It is not endorsed by BBK or
+胖老鼠工作室. No firmware, NAND image, original font file, or device save is included.
+
+The H1 port uses the BBK H1 BDA SDK as the sdk/ submodule:
+https://github.com/MrDefinition1999/bbk-h1-bda-sdk
+commit 067fe072477861dfc8949d7b1a55279fb92d2548
+The SDK has its own Apache-2.0 LICENSE and NOTICE.
+
+Thanks to QQ group 步步高电子词典游戏群, group number 830340878.

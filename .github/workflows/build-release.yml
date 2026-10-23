@@ -1,0 +1,126 @@
+name: Build and release H1 Mota
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: true
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        id: python
+        with:
+          python-version: '3.12'
+      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
+        id: msys2
+        with:
+          msystem: UCRT64
+          update: false
+          install: mingw-w64-ucrt-x86_64-gcc
+      - name: Install build dependencies and pinned toolchain
+        env:
+          MSYS2_ROOT: ${{ steps.msys2.outputs.msys2-location }}
+          PYTHON_EXECUTABLE: ${{ steps.python.outputs.python-path }}
+        run: |
+          "$env:MSYS2_ROOT/ucrt64/bin" >> $env:GITHUB_PATH
+          & $env:PYTHON_EXECUTABLE -m pip install -r requirements.txt
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          & $env:PYTHON_EXECUTABLE tools/install_toolchain.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Test game rules, controls, saves and actual C renderer on the host
+        env:
+          PYTHON_EXECUTABLE: ${{ steps.python.outputs.python-path }}
+        run: |
+          & $env:PYTHON_EXECUTABLE tools/test.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Build and validate the BDA and installation package
+        env:
+          PYTHON_EXECUTABLE: ${{ steps.python.outputs.python-path }}
+          IS_VERSION_TAG: ${{ startsWith(github.ref, 'refs/tags/v') }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          & $env:PYTHON_EXECUTABLE tools/build.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          if ($env:IS_VERSION_TAG -eq 'true') {
+            & $env:PYTHON_EXECUTABLE tools/verify_release.py --tag "$env:RELEASE_TAG"
+          } else {
+            & $env:PYTHON_EXECUTABLE tools/verify_release.py
+          }
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Require byte-identical BDA, metadata and installation package on rebuild
+        env:
+          PYTHON_EXECUTABLE: ${{ steps.python.outputs.python-path }}
+        run: |
+          $first = @{}
+          Get-ChildItem -File dist | ForEach-Object { $first[$_.Name] = (Get-FileHash $_.FullName -Algorithm SHA256).Hash }
+          & $env:PYTHON_EXECUTABLE tools/build.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          Get-ChildItem -File dist | ForEach-Object {
+            if ((Get-FileHash $_.FullName -Algorithm SHA256).Hash -ne $first[$_.Name]) { throw "Non-reproducible release file: $($_.Name)" }
+          }
+          & $env:PYTHON_EXECUTABLE tools/verify_release.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: H1-Mota-release
+          path: |
+            dist/H1Mota.bda
+            dist/H1Mota.bda.sha256
+            dist/H1Mota-install.zip
+            dist/H1Mota-install.zip.sha256
+            dist/H1Mota.build.json
+          if-no-files-found: error
+          archive: true
+          retention-days: 14
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: host-renderer-previews
+          path: build/screenshots/*.png
+          if-no-files-found: error
+          archive: true
+          retention-days: 14
+
+  release:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: H1-Mota-release
+          path: dist
+          digest-mismatch: error
+      - name: Verify downloaded assets and publish the same build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse "refs/tags/${RELEASE_TAG}^{commit}")" = "$GITHUB_SHA"
+          python tools/verify_release.py --tag "$RELEASE_TAG"
+          gh release create "$RELEASE_TAG" dist/H1Mota.bda dist/H1Mota.bda.sha256 dist/H1Mota-install.zip dist/H1Mota-install.zip.sha256 dist/H1Mota.build.json --verify-tag --prerelease --title "魔塔24层 H1 $RELEASE_TAG" --notes-file RELEASE-NOTES.md

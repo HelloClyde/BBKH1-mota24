@@ -1,0 +1,39 @@
+# Local build outputs, tests, toolchains and environments.
+/build/
+/dist/
+/reports/
+/.tools/
+/.venv/
+/venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+*.o
+*.elf
+*.map
+*.exe
+*.dll
+*.bda
+*.zip
+
+# Private firmware, NAND and game saves must never enter the repository.
+/private/
+*.raw
+*.img
+*.nand
+*.bin
+*.SAV
+*.sav
+*.BAK
+*.bak
+*.TMP
+*.tmp
+*.log
+
+# Editor and OS state.
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini

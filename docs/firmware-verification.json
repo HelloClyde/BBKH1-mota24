@@ -1,0 +1,106 @@
+{
+  "date": "2026-10-23",
+  "version": "0.1.0",
+  "target": "BBK H1/Y100 V1.41",
+  "result": "passed",
+  "bda_bytes": 543876,
+  "bda_sha256": "5bb7986c0a58f3acfec846271f3084566bf4a44e85fc284a2c7a88d5f291ca70",
+  "sdk_commit": "067fe072477861dfc8949d7b1a55279fb92d2548",
+  "toolchain": "mipsel-none-elf GCC 15.2.0",
+  "physical_device_used": false,
+  "game_ram_modified": false,
+  "checks": [
+    "native-title",
+    "eight-opening-pages",
+    "fairy-first-dialog-and-three-keys",
+    "keyboard-movement",
+    "left-right-alt-movement",
+    "touch-movement",
+    "touch-menu",
+    "save-slot-1",
+    "load-restores-position-and-map",
+    "save-and-exit",
+    "480x272-framebuffer"
+  ],
+  "save_load_equal_fields": [
+    "floor",
+    "x",
+    "y",
+    "hp",
+    "atk",
+    "def",
+    "gold",
+    "exp",
+    "level",
+    "yellow",
+    "blue",
+    "red",
+    "flags",
+    "visited",
+    "map_sha256"
+  ],
+  "saved_files": [
+    {
+      "path": "/H1MOTA/SLOT1.SAV",
+      "bytes": 6608,
+      "sha256": "4a4faa183de726101906a53b4fcba76445452ce54f9b94a5b3a228578e42f6ed",
+      "checksum_valid": true,
+      "floor_x_y": [
+        0,
+        5,
+        8
+      ]
+    },
+    {
+      "path": "/H1MOTA/SLOT1.BAK",
+      "bytes": 6608,
+      "sha256": "dbe4c80bb19ef6ad7d4b5bec9522dd5034b8e4ac7f94a5c29a64cd4de8ca5d80",
+      "checksum_valid": true,
+      "floor_x_y": [
+        0,
+        5,
+        8
+      ]
+    }
+  ],
+  "template_unchanged": true,
+  "owned_emulator_stopped": true,
+  "owned_frontend_stopped": true,
+  "elapsed_seconds": 94.469,
+  "sources_sha256": {
+    "core.c": "2d96b4b1e68b3e85f3c3bba68eba891b59405198f693e54aa5e1dc745182cb2a",
+    "data.h": "ebaf353e721753265cde90c16b7c1d00a565821565889780a56d8b3a4e6ab149",
+    "entry.S": "05af37e99f253f48c07b07c29fc31ee4f17a2c46e4c69daa98629d8ea8b4a7a9",
+    "font.h": "4007bb37dc58eba221cbf5ac550f1b1f00994788886704fdea09956a74603feb",
+    "h1_main.h": "9231733d84fb72cde4a4842d76825c3078fa28e61b724c6d06cdea2a0bf643b5",
+    "h1_platform.h": "aa74bcc64aeffbbdfd2f333c53a293b84a6a8f3e5dfcbda13cb6a1f28dfee522",
+    "mota24.c": "9fbe89cbdff29f536feb0a1832878773af629fb5ad4a8c9f3a803e779db2c7e8",
+    "runtime.c": "56120befef66c91929d3c48a50dac5254c0da6743014efe8d11d7aecc218fe6e",
+    "sprites.h": "30d95e35418e771167e5fc8e1e6afa455bcefb7aa63d303ba715f687e4fd5920",
+    "storage.h": "13dcca54d8f0472a54358ddcea53ff10e61fbfd864a4f6b515e6c11651274c8a",
+    "story.h": "43eb46f4ad4199cec4ba89e18f3b1cd6a8184c589bc7ae2ec168d623d0624824"
+  },
+  "screenshots": {
+    "gameplay.png": {
+      "width": 480,
+      "height": 272,
+      "sha256": "9402b24e1e2e269bf24ef1e2a9e33b7775fb704ecd27875d6975dec183086bdf"
+    },
+    "menu.png": {
+      "width": 480,
+      "height": 272,
+      "sha256": "5a8d02860e4d65783dd71d15bafcb99cb3de1b510a6510bbcf38e288a8966049"
+    },
+    "save.png": {
+      "width": 480,
+      "height": 272,
+      "sha256": "591a390ed8bc3e8a5854f0cd08e29da42f03f4d1335a3970b86bedf463039477"
+    },
+    "title.png": {
+      "width": 480,
+      "height": 272,
+      "sha256": "cdac778d9315ec40ba899f39daf06fc90a45d50b9a058758eb9bf16a444a6605"
+    }
+  },
+  "source_text_normalization": "LF line endings in the public repository; the resulting BDA is byte-identical to the firmware-tested build."
+}
